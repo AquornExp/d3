@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>d3</title>
+	<!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+	<script src="d3/d3.min.js"></script>
+	<style type="text/css">
+		.chart rect {
+		  font: 10px sans-serif;
+		  background-color: steelblue;
+		  text-align: right;
+		  padding: 3px;
+		  margin: 1px;
+		  color: white;
+		}
+	</style>
+</head>
+<body>
+	<svg class="chart">
+		
+	</svg>
+	<p id='p1'>hello world 1</p>
+	<p id='p2'>hello world 2</p>
+	<p id='p3' class="pp">hello world 2</p>
+	<p id='p4' class="pp">hello world 2</p>
+</body>
+<script type="text/javascript">
+	var body = d3.select("body");
+	var p = body.selectAll("p");
+	// p.text('what a fucking world!!!');
+	// p.style("color","red")
+	// .style("font-size","72px");
+	var dataset = ['dog','cat','monkey','fish'];
+	p.data(dataset);
+	p.text(function (d) {
+		return 'I like '+d;
+	})
+	body.insert("p","#p2").text('before');
+	body.select("#p4").remove();
+	body.append('a').text('heheda')
+	.attr("href","http://www.google.com")
+	.attr("target","_blank");
+
+	var width = 300;
+	var height = 300;
+	var rectHeight = 25; 
+	var svg = d3.select("body")
+				.select('svg.chart')
+				.attr('width', width)
+				.attr('height',height);
+	var ds = [ 200,150,70,130,180];
+	svg.selectAll('rect')
+	   .data(ds)
+	   .enter()
+	   .append('rect')
+	   .attr('x',20)
+	   .attr('y', function (d,i) {
+	   		return i*rectHeight;
+	   })
+	   .attr('width', function (d) {
+	   		return d;
+	   })
+	   .attr('height', rectHeight-2)
+	   .text(function (d) {
+	   		return d;
+	   })
+	// console.log(d3.scaleLinear);
+	// var linear = d3.scaleLinear
+ //      .domain([0, d3.max(ds)])
+ //      .range([0, 250]);
+
+ //    var axis = d3.svg.axis()
+ //     .scaleLinear(linear)      
+ //     .orient("bottom")   
+ //     .ticks(7);  
+
+ //    svg.append('g').call(axis);        
+
+</script>
+</html>

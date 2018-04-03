@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: orange;
+}
+
+.bar2 {
+  fill: brown;
+}
+
+.bar2:hover {
+  fill: orange;
+}
+
+.axis--x path {
+  display: none;
+}
+
+</style>
+	<title>bar</title>
+	<script src="d3/d3.min.js"></script>
+</head>
+<body>
+<h2 style="color:#5342f4;">Option Redemption Feature</h2>
+<svg width="960" height="700"></svg>
+</body>
+<script>
+
+var svg = d3.select("svg"),
+    margin = {top: 20, right: 20, bottom: 30, left: 70},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+    y = d3.scaleLinear().rangeRound([height, 0]);
+
+var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var callable = [
+			{year:"2018",amount:1000000},
+			{year:"2019",amount:1000000},
+			{year:"2020",amount:500000},
+			{year:"2021",amount:4000000},
+			{year:"2022",amount:6000000},
+			{year:"2023",amount:7000000},
+      {year:"2024",amount:13000000},
+      {year:"2025",amount:22000000},
+			{year:"2026",amount:27000000},
+		];
+var noncallable = [
+			{year:"2027",amount:32000000},
+			{year:"2028",amount:36000000},
+			{year:"2029",amount:35500000},
+			{year:"2030",amount:16000000},
+			{year:"2031",amount:16000000},
+			{year:"2032",amount:16000000},
+			{year:"2033",amount:3000000}
+		];
+var i = 2018;
+var map = [];
+for(;i<=2033;i++){
+  map.push(i+"");
+}
+
+console.log("callable:"+d3.sum(callable,function(d){return d.amount;}));
+console.log("noncallable:"+d3.sum(noncallable,function(d){return d.amount;}));
+
+var max1 = d3.max(callable, function(d) { return d.amount*1.2; });
+var max2 = d3.max(noncallable, function(d) { return d.amount*1.2; });
+var max = max1>max2?max1:max2;
+
+var commasFormatter = d3.format(",.0f");
+
+  x.domain(map);
+  y.domain([0, max]);
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y).tickFormat(function(d) { return "$" + commasFormatter(d); }))
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("text-anchor", "end")
+      .text("Frequency");
+
+  g.selectAll(".bar")
+    .data(callable)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.year); })
+      .attr("y", function(d) { return y(d.amount); })
+      .attr("width", x.bandwidth())
+      .attr("height", function(d) { return height - y(d.amount); });
+
+  g.selectAll(".bar2")
+    .data(noncallable)
+    .enter().append("rect")
+      .attr("class", "bar2")
+      .attr("x", function(d) { return x(d.year); })
+      .attr("y", function(d) { return y(d.amount); })
+      .attr("width", x.bandwidth())
+      .attr("height", function(d) { return height - y(d.amount); });
+
+var lg = svg.append("g")
+    .attr("class",".legend-g")
+    .attr("transform", "translate(" + (margin.left+200) + "," + (margin.top+height+50) + ")");
+
+var legend = lg.append("g")
+      .attr("class","legend")
+      .attr("width", 200)
+      .attr("height", 50)
+      .attr('fill', 'black')
+      .attr('fill-opacity',"1")
+      .attr('stroke','1');
+
+var lgdata = [
+  {text:'callable',color:'steelblue'},
+  {text:'noncallable',color:'brown'}
+];
+
+setLegend(lgdata);
+function setLegend(data){
+  // for(var k of m.keys()){
+  //  console.log(k);
+  //  console.log(m.get(k));
+  // }
+  for(let i in data){
+    let entry = data[i];
+    legend.append("circle")
+      .attr("r",10)
+      .attr('cx',10)
+      .attr('cy',10+i*30)
+      .attr('fill',entry.color);
+    legend.append("text")
+      .attr("dy", ".35em")
+      .attr('x',30)
+      .attr('y',10+i*30)
+      .text(entry.text);
+  }
+
+}
+
+  
+// });
+
+</script>
+</html>
